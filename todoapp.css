@@ -1,0 +1,12 @@
+:root {
+    --conatiner-height: 600px;
+    --conatiner-width: 400px;
+    --header-height: 150px;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'ubuntu' , monospace;
+}
