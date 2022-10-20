@@ -1,6 +1,7 @@
 // SELECT ELEMENTS
 const form = document.getElementById('todoform');
 const todoInput = document.getElementById('newtodo')
+const todosListEl = document.getElementById('todos-list')
 
 // VARS
 let todos = [];
@@ -10,6 +11,7 @@ form.addEventListener('submit', function (event) {
     event.preventDefault();
 
    saveTodo();
+   renderTodos();
 
 });
 
@@ -39,5 +41,32 @@ function saveTodo(){
     }
 }
 
+// RENDER TODOS
+function renderTodos(){
+// CLEAR ELEMENT BEFORE A RERENDER
+todosListEl.innerHTML = '';
+
+// RENDER TODOS
+    todos.forEach((todo, index) =>{
+        todosListEl.innerHTML += `
+        <div class="todo" id=${index}> 
+           <i 
+             class="bi ${todo.checked ? 'bi-check-circle-fill' : 'bi-circle' }"
+             style="color : ${todo.color}"
+             
+             
+            ></i>
+           <p class="">${todo.value}</p>
+           <i class="bi bi-pencil-square"></i>
+           <i class="bi bi-trash"></i>
+
+        </div>
+        
+        
+        
+        `;
+    })
+
+}
 
 
