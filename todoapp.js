@@ -5,6 +5,7 @@ const todosListEl = document.getElementById('todos-list')
 
 // VARS
 let todos = [];
+let EditTodoId = -1;
 
 // FORM SUBMIT
 form.addEventListener('submit', function (event) {
@@ -31,11 +32,20 @@ function saveTodo(){
     } else if (isDuplicate){
         alert('Todo already exists!');
     } else {
+       if(EditTodoId >= 0){
+        todos = todos.map((todo, index) => ( {
+                ...todo,
+                value : index === EditTodoId ? todoValue : todo.value,
+            }));
+            EditTodoId = -1;
+       } else {
         todos.push({
             value : todoValue,
             checked : false,
             color : "#" + Math.floor(Math.random()*16777215).toString(16)
         });
+       }
+        
         todoInput.value = '';
 
     }
@@ -81,8 +91,8 @@ todosListEl.addEventListener('click', (event) => {
 
 
     action === "check" && checkTodo(todoId);
-    // action === "edit" && editTodo(todoId);
-    // action === "delete" && deleteTodo(todoId);
+    action === "edit" && editTodo(todoId);
+    action === "delete" && deleteTodo(todoId);
 
 });
 
@@ -95,6 +105,21 @@ function checkTodo(todoId){
 
 
  renderTodos();
+}
+
+// EDIT A TODO
+function editTodo(todoId){
+    todoInput.value = todos[todoId].value;
+    EditTodoId = todoId;
+}
+
+// DELETE TODO
+function deleteTodo(todoId){
+    todos = todos.filter((todo, index) => index !== todoId);
+    EditTodoId = -1;
+
+// RE-RENDER TODOS
+    renderTodos();
 }
 
 
