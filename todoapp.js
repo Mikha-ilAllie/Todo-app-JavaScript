@@ -1,11 +1,15 @@
 // SELECT ELEMENTS
 const form = document.getElementById('todoform');
-const todoInput = document.getElementById('newtodo')
-const todosListEl = document.getElementById('todos-list')
+const todoInput = document.getElementById('newtodo');
+const todosListEl = document.getElementById('todos-list');
+const notificationEl = document.querySelector('.notification');
 
 // VARS
-let todos = [];
+let todos = JSON.parse(localStorage.getItem('todos')) || [];
 let EditTodoId = -1;
+
+// first render
+renderTodos();
 
 // FORM SUBMIT
 form.addEventListener('submit', function (event) {
@@ -13,6 +17,7 @@ form.addEventListener('submit', function (event) {
 
    saveTodo();
    renderTodos();
+   localStorage.setItem('todos', JSON.stringify(todos))
 
 });
 
@@ -27,10 +32,10 @@ function saveTodo(){
      const isDuplicate = todos.some((todo) => todo.value.toUpperCase() === todoValue.toUpperCase());
 
     if(isEmpty){
-        alert("Todo's input is empty");
+        showNotification("Todo's input is empty");
 
     } else if (isDuplicate){
-        alert('Todo already exists!');
+        showNotification('Todo already exists!');
     } else {
        if(EditTodoId >= 0){
         todos = todos.map((todo, index) => ( {
@@ -53,8 +58,13 @@ function saveTodo(){
 
 // RENDER TODOS
 function renderTodos(){
+    if(todos.length === 0){
+        todosListEl.innerHTML = '<center>Nothing to do!</center>'
+        return;
+    }
 // CLEAR ELEMENT BEFORE A RERENDER
 todosListEl.innerHTML = '';
+
 
 // RENDER TODOS
     todos.forEach((todo, index) =>{
@@ -65,7 +75,7 @@ todosListEl.innerHTML = '';
              style="color : ${todo.color}"
              data-action="check"
            ></i>
-           <p class="" data-action="check">${todo.value}</p>
+           <p class="${todo.checked ? 'checked' : '' }" data-action="check">${todo.value}</p>
            <i class="bi bi-pencil-square" data-action="edit"></i>
            <i class="bi bi-trash" data-action="delete"></i>
 
@@ -101,10 +111,12 @@ function checkTodo(todoId){
     todos = todos.map((todo, index) => ({
         ...todo,
         checked : index === todoId ? !todo.checked : todo.checked
+        
     }));
 
 
  renderTodos();
+ localStorage.setItem('todos', JSON.stringify(todos))
 }
 
 // EDIT A TODO
@@ -120,6 +132,24 @@ function deleteTodo(todoId){
 
 // RE-RENDER TODOS
     renderTodos();
+    localStorage.setItem('todos', JSON.stringify(todos))
+}
+
+// SHOW A NOTIFICATION
+function showNotification(msg){
+    // change the message
+    notificationEl.innerHTML = msg;
+
+    // notification enter
+
+    notificationEl.classList.add('notif-enter');
+
+    // notifiation leave
+
+    setTimeout(() =>{
+        notificationEl.classList.remove('notif-enter')
+
+    }, 2000)
 }
 
 
